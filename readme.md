@@ -46,9 +46,9 @@ Doplňte do níže uvedené tabulky význam zkratek, základní princip a typick
 | :----------------------- | :------------------------------------ | :--------------------------------------------------------------------------------------------------- | :------------------------------------------ | :--------------------------------------- |
 | **MCU**                  | microcontroller unit                  | Integrovaný čip (CPU + RAM + Flash na jednom substrátu), deterministický běh bez OS nebo RTOS        | např. ESP32, PIC16LF1xxx, RP2040            |                                          |
 | **MPU**                  | microprocessor unit                   | Samostatný procesor vyžadující externí RAM a úložiště, zpravidla běží plnohodnotný OS (Linux)        | Raspberry Pi (Broadcom BCM2711), NXP i.MX6, STM32MP1        |Wi-Fi routery, multimediální centra, infopanely v autech                                          |
-| **Embedded**             |                                       |                                                                                                      | Embedded PLC, Embedded PC                   | Bílá technika, bankomaty, regulace kotlů |
-| **PLC**                  |                                       | Průmyslový automat pro cyklické deterministické řízení procesů, vysoká odolnost, modulární/kompaktní |                                             |                                          |
-| **iPC**                  |                                       |                                                                                                      |                                             |                                          |
+| **Embedded**             | vestavěné systémy                                      | Jednoúčelový počítačový systém skrytý v jiném zařízení, navržený pro konkrétní řídící nebo monitorovací funkci                | Embedded PLC, Embedded PC                   | Bílá technika, bankomaty, regulace kotlů |
+| **PLC**                  | programmable logic controller       | Průmyslový automat pro cyklické deterministické řízení procesů, vysoká odolnost, modulární/kompaktní |  Siemens Simatic S7-1200, Allen-Bradley Micro800          | Řízení montážních linek, semafory, automatizace továren                                         |
+| **iPC**                  | indrustrial PC                                      |                                                                                                      |                                             |                                          |
 | **Programovatelné relé** |                                       | Zjednodušené kompaktní PLC pro méně náročné úlohy, nahrazuje časovací relé a stykačové kombinace     |                                             |                                          |
 
 > :key: **Vysvětlení pojmů a odborné zdroje:**
@@ -80,42 +80,42 @@ Proč se u kritických aplikací v letectví (např. systém řízení letu Fly-
 1. **Typy pamětí v řídicích jednotkách:**
    - Doplňte porovnání pamětí z hlediska stálosti dat a rychlosti:
      - **RAM:** 
-	     - Je volatilní (energeticky závislá)? `[Ano / Ne]`
-	     - Rychlost zápisu: `...` 
-	     - K čemu se využívá v PLC/MCU: `...`
+	     - Je volatilní (energeticky závislá)? ANO
+	     - Rychlost zápisu: v řádu nanosekund 
+	     - K čemu se využívá v PLC/MCU: Ukládání dočasných dat během běhu programu (výpočty, stav mezioperačních proměnných, zásobník, paměť obrazu vstupů/výstupů) 
      - **Flash (ROM):** 
-	     - Je volatilní? `[Ano / Ne]`
-	     - K čemu se využívá v PLC/MCU: `...`
+	     - Je volatilní? NE
+	     - K čemu se využívá v PLC/MCU: Ukládání samotného uživatelského programu (firmwaru/řídicího kódu) a konstant, které se po vypnutí nesmí ztratit.
      - **EEPROM / NVRAM:** 
-	     - Je volatilní? `[Ano / Ne]`
-	     - K čemu se využívá v PLC/MCU: `...`
+	     - Je volatilní? NE
+	     - K čemu se využívá v PLC/MCU: Ukládání kalibrací, parametrů nastavení systému a remanentních dat (konfigurace, které se mění zřídka, ale musí zůstat zachovány po vypnutí)
    - *Otázka z praxe:* Kam se v průmyslovém PLC ukládají aktuální provozní proměnné (např. čítače vyrobených kusů nebo motohodiny), aby se při nečekaném výpadku napájení neztratily (tzv. remanentní / retain data)?
-     - Odpověď: `...`
+     - Odpověď: Do NVRAM (Non-Volatile RAM), EEPROM, případně do statické RAM zálohované baterií či superkapacitorem (BRAM).
 
 2. **Reálný čas a determinismus (Hard vs. Soft Real-Time):**
    - Proč pro reakci na nouzové zastavení lisu (požadavek reakce do 5 ms) použijeme PLC či mikrokontrolér s RTOS, a nikoliv běžné Raspberry Pi s operačním systémem Raspberry Pi OS (standardní Linux)?
-     - Odpověď: `...`
+     - Odpověď: Aplikace vyžaduje tvrtý reálný čas (Hard Real-Time) s garantovanou maximální dobou odezvy. Standardní Linux na Raspberry Pi je systém se Soft Real-Time — plánovač procesů nemá deterministické chování a operační systém může reakci zpozdit (např. kvůli obsluze přerušení, plánování jiných úloh nebo běhu služeb na pozadí), což by mohlo vést k havárii nebo zranění.
 
 3. **Odolnost vůči vlivům prostředí a dešifrování kódu IP:**
    - Dešifrujte kód **IP68**:
-     - První číslice (6): `...`
-     - Druhá číslice (8): `...`
+     - První číslice (6): Úplná ochrana před nebezpečným dotykem a úplná prachotěsnost (ochrana proti vniknutí prachu).
+     - Druhá číslice (8): Ochrana proti trvalému ponoření do vody za podmínek určených výrobcem.
    - Jaké minimální krytí IP musí mít rozváděč umístěný ve venkovním nekrytém prostředí, kde na něj přímo dopadá déšť a fouká polétavý prach?
-     - Označte správnou volbu: `[ ] IP20` | `[ ] IP44` | `[ ] IP65` | `[ ] IP00`
-     - Zdůvodnění: `...`
+     - Označte správnou volbu: `[ ] IP20` | `[ ] IP44` | `[X] IP65` | `[ ] IP00`
+     - Zdůvodnění: První číslice 6 zaručuje úplnou ochranu před vniknutím polétavého prachu (4 v IP44 chrání jen před částicemi nad 1 mm). Druhá číslice 5 zaručuje ochranu proti tryskající vodě ze všech směrů (přímý déšť s větrem), což je pro nekryté venkovní prostředí nezbytné minimum.
 
 4. **Konstrukční rozdíly kancelářského PC vs. průmyslového iPC:**
    - Vyberte a doplňte hlavní odlišnosti:
      - *Chlazení:* 
-	     - Kancelářské PC: `...` 
-	     - vs. iPC: `...`
+	     - Kancelářské PC: Aktivní (ventilátory nasávající vzduch a prach z okolí).
+	     - vs. iPC: Pasivní (Fanless design bez pohyblivých částí, odvod tepla masivním hliníkovým žebrováním).
      - *Napájecí napětí a filtrace:* 
-	     - Kancelářské PC: `...` 
-	     - vs. iPC: `...`
-     - *Odolnost proti otřesům a vibracím:* `...`
+	     - Kancelářské PC: Standardní síťové napájení AC 230 V (120 V), bez rozšířené průmyslové filtrace.
+	     - vs. iPC: Širokorozsahové průmyslové napájení (nejčastěji DC 24 V) s integrovanou galvanickou izolací, přepěťovou ochranou a filtry EM rušení.
+     - *Odolnost proti otřesům a vibracím:* iPC využívá celokovové zpevněné šasi, průmyslová SSD (místo mechanických HDD) a konektory se zajištěním proti vypadnutí (šroubovací/pružinové svorky).
      - *Způsob montáže:* 
 	     - Kancelářské PC: na stůl/pod stůl 
-	     - vs. iPC: `...`
+	     - vs. iPC: Montáž na DIN lištu do rozváděče, VESA držák nebo panelová montáž přímo do dveří rozváděče (Panel PC).
 
 > :key: **Vysvětlení pojmů a odborné zdroje:**
 > - **Determinismus (Real-Time):** Vlastnost systému, která zaručuje, že odezva na vstupní událost proběhne vždy v přesně definovaném a předvídatelném čase (deadline). V *Hard Real-Time* systémech znamená nedodržení časového limitu fatální havárii celého procesu. 
