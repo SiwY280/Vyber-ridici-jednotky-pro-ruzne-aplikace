@@ -211,31 +211,34 @@ Jste v roli projektanta automatizace. Zákazník poptává zhotovení řízení 
 
 | Typ signálu | Požadavek aplikace (kusy) | Popis signálů v aplikaci | Počet po započtení rezervy (+20 %) |
 | :--- | :--- | :--- | :--- |
-| **Digitální vstup (DI)** | `...` | `...` | `...` |
-| **Digitální výstup (DO) – reléový** | `...` | `...` | `...` |
-| **Digitální výstup (DO) – tranzistorový** | `...` | `...` | `...` |
-| **Analogový vstup (AI)** | `...` | `...` | `...` |
-| **Analogový výstup (AO)** | `...` | `...` | `...` |
+| **Digitální vstup (DI)** | 4 | 	3× plovákový spínač (sucho, start, přepad), 1× termistorové ochranné relé motoru (vše 24 V DC). | 5 (4 × 1,2 = 4,8) |
+| **Digitální výstup (DO) – reléový** | 2 |	2× cívka stykače motorů hlavního a záložního čerpadla (spínání 230 V AC).| 3 (2 × 1,2 = 2,4) |
+| **Digitální výstup (DO) – tranzistorový** |1| 1× opticko-akustický výstražný maják (24 V DC / 0,3 A – tranzistor spíná rychle a bez opotřebení). | 2 (1 × 1,2 = 1,2) |
+| **Analogový vstup (AI)** | 1| 	1× hydrostatická ponorná sonda výšky hladiny v jímce (proudová smyčka 4–20 mA). | 2 (1 × 1,2 = 1,2) |
+| **Analogový výstup (AO)** |1 | 1× řízení otáček frekvenčního měniče hlavního čerpadla (napěťový signál 0–10 V). | 2 (1 × 1,2 = 1,2) |
 
 2. **Výběr konkrétního hardwaru z katalogu výrobce:**
    - Navrhněte konkrétní přístroj z praxe (např. *Siemens LOGO! 24RCE + rozšiřující moduly*, *Siemens S7-1200 CPU 1212C/1214C DC/DC/RLY*, *Schneider Modicon M221*, *Eaton easyE4-UC-12RC1*, *WAGO 750*, případně průmyslový IoT kontrolér typu *UniPi Neuron*).
    - Uveďte:
-     - Výrobce a přesný model CPU: `...`
-     - Objednací kód (Part Number / Order Code): `...`
-     - Rozšiřující moduly (pokud jsou nutné pro AI 4–20 mA nebo AO 0–10 V): `...`
-     - Napájecí napětí zvolené jednotky: `...`
-     - Jak je vyřešeno odesílání dat na dispečink: `...`
-     - Odkaz na technický list (datasheet): `...`
-     - Odkazy na další použité zdroje: `...`
+     - Výrobce a přesný model CPU:  Siemens SIMATIC S7-1200, CPU 1214C DC/DC/DC
+     - Objednací kód (Part Number / Order Code):6ES7214-1AG40-0XB0
+     - Rozšiřující moduly (pokud jsou nutné pro AI 4–20 mA nebo AO 0–10 V): SM 1222 DO Relé, modul 8× reléový výstup (pro spínání 230 V AC stykačů) / SB 1232 AO, Signálová deska (Signal Board) 1× analogový výstup 0–10 V (ušetří místo na DIN liště, montuje se přímo na čelo CPU).
+     - Napájecí napětí zvolené jednotky: 24 V DC (zajištěno průmyslovým napájecím zdrojem SITOP na DIN liště).
+     - Jak je vyřešeno odesílání dat na dispečink: • CPU má integrovaný Ethernetový port RJ45 a nativně podporuje protokol Modbus TCP i průmyslové OPC UA. Pro venkovní přečerpávací stanici se do rozváděče osadí průmyslový LTE router (např. Teltonika RUT241), který Ethernetový signál z PLC bezpečně přenese přes mobilní síť (VPN tunel) na centrální dispečink vodáren.
+     - Odkaz na technický list (datasheet): [`...`](https://www.google.com/url?sa=i&source=web&rct=j&url=https://mall.industry.siemens.com/mall/en/WW/Catalog/Product/6ES7214-1AG40-0XB0&ved=2ahUKEwi0ztTwl6GXAxWt_7sIHTZRO9YQy_kOegYIAAgOEBY&opi=89978449&cd&psig=AOvVaw2zoCDNdSeij4xmXSoE3rib&ust=1791231611819000)
+     - Odkazy na další použité zdroje: https://www.google.com/url?sa=i&source=web&rct=j&url=https://support.industry.siemens.com/&ved=2ahUKEwi0ztTwl6GXAxWt_7sIHTZRO9YQy_kOegYIAAgOEBo&opi=89978449&cd&psig=AOvVaw2zoCDNdSeij4xmXSoE3rib&ust=1791231611819000
+
 
 3. **Technické ověření z datasheetu:**
-   - Zvládá zvolená jednotka garantovaný provoz při -20 °C? Doložte údaj z datasheetu: `...`
-   - Jakým způsobem spínáte cívku stykače 230 V AC (reléový výstup jednotky přímo, nebo přes pomocné mezilehlé relé)? Zdůvodněte: `...`
+   - Zvládá zvolená jednotka garantovaný provoz při -20 °C? Doložte údaj z datasheetu: Ano. Podle oficiální specifikace Siemens je provozní teplota pro horizontální montáž -20 °C až +60 °C a pro vertikální montáž -20 °C až +50 °C. Přístroj je z výroby certifikován pro provoz v mrazech do -20 °C bez nutnosti přídavného vyhřívání samotného čipu.
+   - Jakým způsobem spínáte cívku stykače 230 V AC (reléový výstup jednotky přímo, nebo přes pomocné mezilehlé relé)? Zdůvodněte: • Cívku stykače spínáme přes pomocné mezilehlé relé (tzv. oddělovací relé v patici).
+Zdůvodnění: Cívka stykače (0,5 A) při rozepnutí generuje silný napěťový ráz (indukční špičku). Pokud bychom spínali cívku přímo vestavěným relé v PLC modulu, po několika tisících cyklech by došlo k opalování a následnému spečení kontaktů drahého PLC modulu. Použitím levného mezilehlého relé (např. Finder) chráníme PLC. Pokud relé po letech odejde, údržba ho vymění v patici za 100 Kč během minuty, aniž by se musel měnit drahý modul PLC.
+
 
 4. **Krytí rozváděče:**
    - Jaké minimální krytí **IP skříně** zvolíte? Jak v rozváděči zajistíte provoz v mrazech -20 °C a v letních vedrech?
-     - Zvolené krytí rozváděče: `...`
-     - Teplotní management skříně: `...`
+     - Zvolené krytí rozváděče: IP66 (je to venku, potřebuje silnou ochranu)
+     - Teplotní management skříně: Teplotní management venkovního rozváděče IP66 je zajištěn odporovým topným tělesem s termostatem nastaveným na +5 °C proti mrazu a kondenzaci vlhkosti a vnější stínící stříškou s pasivním chlazením přes kovový povrch skříně proti přímému letnímu slunci a přehřátí.
 
 > **Kritéria hodnocení úlohy 4 (bodování a známka):**
 > - :bangbang: **Správnost I/O bilance a dimenzování (30 %):** Správný součet všech signálů, korektní rozlišení reléových vs. tranzistorových výstupů a správné započtení rezervy min. 20 %.
