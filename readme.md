@@ -282,16 +282,16 @@ Jako vedoucí inženýr jste převzal projekt po nezkušeném brigádníkovi, kt
 
 | Oblast auditu | Zjištěná vada v amatérském návrhu | Fyzikální mechanismus selhání (proč to selže) | Následek pro stroj nebo obsluhu |
 | :--- | :--- | :--- | :--- |
-| **Elektromagnetická kompatibilita (EMC)** | `...` | Napěťové špičky z indukční zátěže hydraulických ventilů způsobí restart MCU... | `...` |
-| **Mechanická a teplotní odolnost** | PLA plast a montáž na těleso lisu | `...` | `...` |
-| **Konektivita a propojení vodičů** | DuPont propojovací kabely bez aretace | `...` | `...` |
-| **Funkční bezpečnost (Safety)** | Nouzový stop řešený softwarově v čipu | `...` | `...` |
+| **Elektromagnetická kompatibilita (EMC)** | Hobby reléový modul přímo spínající 400V hydraulické ventily. | Napěťové špičky z indukční zátěže hydraulických ventilů způsobí restart MCU... | Havárie a zranění: Stroj nekontrolovaně sepne ventil v nesprávný moment, což může zničit lisovací matrici nebo rozdrtit ruku operátora. |
+| **Mechanická a teplotní odolnost** | PLA plast a montáž na těleso lisu | PLA plast teplem kovářské dílny změkne a degraduje. Neustálé vibrace lisu způsobí únavový lom plastu a uvolnění desky. | Zkrat a požár: Uvolněné Arduino odpadne na kovové šasi lisu, dojde k plošnému zkratu a okamžitému zničení řízení. |
+| **Konektivita a propojení vodičů** | DuPont propojovací kabely bez aretace | Mechanické otřesy lisu vytřesou volné DuPont konektory z pinů. Vznikne přechodový odpor, jiskření nebo úplná ztráta kontaktu. | Nekontrolovatelný stroj: Rozpojení vodiče k ventilu zanechá lis v nepředvídatelném stavu (např. trvale sepnutý pod tlakem). |
+| **Funkční bezpečnost (Safety)** | Nouzový stop řešený softwarově v čipu | Pokud program zamrzne (kvůli EMC špičce) nebo se poškodí tranzistor výstupu, procesor na stisk tlačítka vůbec nezareaguje. | Smrtelný úraz: Při kritické situaci operátor stiskne E-Stop, ale lis dál pokračuje v pohybu a nelze ho zastavit.|
 
 2. **Návrh profesionálního nápravného řešení:**
    - Navrhněte, jakými certifikovanými průmyslovými komponenty tento celek nahradíte při zachování minimálního rozpočtu:
-     - *Náhrada řídicí jednotky:* `...` *(např. certifikované průmyslové programovatelné relé s montáží na DIN lištu a krytím)*
-     - *Náhrada napájecího zdroje:* `...` *(např. stabilizovaný průmyslový zdroj 24 V DC na DIN lištu s ochranou proti přepětí)*
-     - *Způsob zapojení bezpečnostního okruhu (Safety):* Jak musí být podle norem zapojeno tlačítko Emergency Stop (E-Stop)? Smí být spoléháno pouze na software mikrokontroléru? Zdůvodněte: `...`
+     - *Náhrada řídicí jednotky:* programovatelné relé Siemens LOGO! 24RCE (nebo Eaton easyE4) (splnuje všechny normy na vibrace, teplotu, + má integrované stínění proti elektromag. rušení) *(např. certifikované průmyslové programovatelné relé s montáží na DIN lištu a krytím)*
+     - *Náhrada napájecího zdroje:* Siemens SITOP nebo Mean Well HDR *(např. stabilizovaný průmyslový zdroj 24 V DC na DIN lištu s ochranou proti přepětí)*
+     - *Způsob zapojení bezpečnostního okruhu (Safety):* Jak musí být podle norem zapojeno tlačítko Emergency Stop (E-Stop)? Smí být spoléháno pouze na software mikrokontroléru? Zdůvodněte: musí být zapojeno hardwarově, přímo do napájecího okruhu akčních členů přes certifikované bezpečnostní relé (Podle bezpečnostních norem (např. ČSN EN ISO 13849-1) se nesmí spoléhat pouze na software mikrokontroléru. Tlačítko E-Stop musí mít rozpínací kontakty (NC), které při stisku fyzicky a natvrdo přeruší přívod napájení 230V/400V pro hydraulické ventily a stykače motorů. Stroj se tak okamžitě bezpečně zastaví bez ohledu na to, zda řídicí počítač funguje, nebo je totálně zamrzlý.)
 
 > **Kritéria hodnocení úlohy 5 (bodování a známka):**
 > - :bangbang: **Odborná úroveň identifikace závad (35 %):** Přesná technická terminologie (např. elektromagnetická indukce, absence odrušovacích varistorů, skelný přechod PLA plastu při 60 °C, studené spoje a vyklepání konektorů vibracemi).
