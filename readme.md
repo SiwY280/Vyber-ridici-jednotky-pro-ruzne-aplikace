@@ -312,7 +312,7 @@ Jako vedoucí inženýr jste převzal projekt po nezkušeném brigádníkovi, kt
 Proč hobby reléové moduly s optočleny určené pro Arduino v průmyslovém rozváděči často shoří nebo způsobí trvalé sepnutí zátěže (tzv. přivaření kontaktů), i když jmenovitý proud relé je 10 A a cívka stykače odebírá jen 0,5 A?
 
 *Vaše odpověď:*
-`...`
+Může vzniknout oblouk, napěťová špička, slabá konstrukce desky (Řešení - Pro průmyslové stykače je nutné použít robustní průmyslové relé na DIN lištu a cívku stykače vždy doplnit o ochranný RC člen nebo varistor, který špičku pohltí.)
 
 ---
 
