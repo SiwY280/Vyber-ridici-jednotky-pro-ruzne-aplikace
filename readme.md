@@ -260,7 +260,7 @@ Zdůvodnění: Cívka stykače (0,5 A) při rozepnutí generuje silný napěťov
 Proč se u čerpadel v čistírnách odpadních vod a jímkách striktně upřednostňuje měření hladiny pomocí proudového signálu 4–20 mA před napěťovým signálem 0–10 V a proč se do jímky nepoužívá ultrazvukový senzor, pokud v ní vzniká hustá pěna?
 
 *Vaše odpověď:*
-`...`
+Proud - pozná problém, protože nepřijde proudový signál / Napětí - pozná že nic neprochází, ale nevidí to jako chybu / Ultrazvuk - pěna ruší echo (potřebuje čistý průchod) 
 
 ---
 
